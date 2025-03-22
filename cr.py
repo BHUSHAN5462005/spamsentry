@@ -44,22 +44,22 @@ vectorizer = joblib.load("tfidf_vectorizer.pkl")
 # Function to apply keyword-based boosting
 def keyword_boost(text):
     spam_keywords = {
-        "free": 0.2, "win": 0.3, "winner": 0.3, "congratulations": 0.2, 
-        "claim": 0.3, "click": 0.2, "urgent": 0.3, "lottery": 0.4,
-        "transfer": 0.5, "bank account": 0.5, "confidential": 0.5, 
-        "risk-free": 0.6, "prince": 0.7, "Nigeria": 0.8,
-        "work from home": 0.5, "earn": 0.3, "per month": 0.4, 
-        "apply now": 0.5, "hiring": 0.3, "no experience": 0.4,
-        # New spam terms
-        "double the money": 0.6, "invest": 0.5, "investment": 0.5, 
-        "money back": 0.5, "fast cash": 0.6, "guaranteed": 0.4, 
-        "limited offer": 0.3, "phone number": 0.5
+        "free": 0.15, "win": 0.2, "winner": 0.2, "congratulations": 0.15, 
+        "claim": 0.2, "click": 0.15, "urgent": 0.25, "lottery": 0.3,
+        "transfer": 0.35, "bank account": 0.35, "confidential": 0.35, 
+        "risk-free": 0.4, "prince": 0.5, "Nigeria": 0.2,
+        "work from home": 0.3, "earn": 0.2, "per month": 0.25, 
+        "apply now": 0.3, "hiring": 0.2, "no experience": 0.25,
+        # Adjusted spam terms
+        "double the money": 0.4, "invest": 0.35, "investment": 0.35, 
+        "money back": 0.3, "fast cash": 0.4, "guaranteed": 0.25, 
+        "limited offer": 0.2, "phone number": 0.3
     }
     boost = sum(weight for word, weight in spam_keywords.items() if re.search(rf"\b{word}\b", text, re.IGNORECASE))
 
     # Detect phone numbers (7 or more digits)
     if re.search(r"\b\d{7,}\b", text):  
-        boost += 0.4  # Increase spam probability for numbers
+        boost += 0.3  # Adjusted impact of phone numbers
 
     return boost
 
@@ -82,7 +82,7 @@ if st.button("Classify"):
 
         # Display result
         st.subheader("Result:")
-        if boosted_prob >= 0.2:  # Lowered threshold for catching more spam
+        if boosted_prob >= 0.5:  # Adjusted threshold for spam detection
             st.error(f"🚨 This email is **Spam!** (Confidence: {boosted_prob:.2f})")
         else:
             st.success(f"✅ This email is **Not Spam.** (Confidence: {boosted_prob:.2f})")
