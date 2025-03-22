@@ -52,7 +52,7 @@ def keyword_boost(text):
         "apply now": 0.3, "hiring": 0.2, "no experience": 0.25,
         # Increased weights for financial/spam terms
         "double the money": 0.7, "invest": 0.6, "investment": 0.6, 
-        "money back": 0.5, "fast cash": 0.7, "guaranteed": 0.5, 
+        "money back": 0.25, "fast cash": 0.7, "guaranteed": 0.5, 
         "limited offer": 0.4, "phone number": 0.6
     }
     boost = sum(weight for word, weight in spam_keywords.items() if re.search(rf"\b{word}\b", text, re.IGNORECASE))
