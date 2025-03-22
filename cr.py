@@ -16,10 +16,10 @@ def load_data():
 
 data = load_data()
 
-# Train TF-IDF Vectorizer
+# Train TF-IDF Vectorizer with 5000 features
 @st.cache_resource
 def train_vectorizer():
-    vectorizer = TfidfVectorizer(stop_words="english", max_features=3000)
+    vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)  # Increased features
     X_tfidf = vectorizer.fit_transform(data["message"])  # Fit on full dataset
     joblib.dump(vectorizer, "tfidf_vectorizer.pkl")
     return vectorizer
@@ -47,11 +47,20 @@ def keyword_boost(text):
         "free": 0.2, "win": 0.3, "winner": 0.3, "congratulations": 0.2, 
         "claim": 0.3, "click": 0.2, "urgent": 0.3, "lottery": 0.4,
         "transfer": 0.5, "bank account": 0.5, "confidential": 0.5, 
-        "risk-free": 0.6, "prince": 0.7, 
+        "risk-free": 0.6, "prince": 0.7, "Nigeria": 0.8,
         "work from home": 0.5, "earn": 0.3, "per month": 0.4, 
-        "apply now": 0.5, "hiring": 0.3, "no experience": 0.4
+        "apply now": 0.5, "hiring": 0.3, "no experience": 0.4,
+        # New spam terms
+        "double the money": 0.6, "invest": 0.5, "investment": 0.5, 
+        "money back": 0.5, "fast cash": 0.6, "guaranteed": 0.4, 
+        "limited offer": 0.3, "phone number": 0.5
     }
     boost = sum(weight for word, weight in spam_keywords.items() if re.search(rf"\b{word}\b", text, re.IGNORECASE))
+
+    # Detect phone numbers (7 or more digits)
+    if re.search(r"\b\d{7,}\b", text):  
+        boost += 0.4  # Increase spam probability for numbers
+
     return boost
 
 # Streamlit UI
@@ -73,7 +82,7 @@ if st.button("Classify"):
 
         # Display result
         st.subheader("Result:")
-        if boosted_prob >= 0.3:  # Lowered threshold for catching more spam
+        if boosted_prob >= 0.2:  # Lowered threshold for catching more spam
             st.error(f"🚨 This email is **Spam!** (Confidence: {boosted_prob:.2f})")
         else:
             st.success(f"✅ This email is **Not Spam.** (Confidence: {boosted_prob:.2f})")
