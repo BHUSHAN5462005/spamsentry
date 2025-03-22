@@ -47,19 +47,19 @@ def keyword_boost(text):
         "free": 0.15, "win": 0.2, "winner": 0.2, "congratulations": 0.15, 
         "claim": 0.2, "click": 0.15, "urgent": 0.25, "lottery": 0.3,
         "transfer": 0.35, "bank account": 0.35, "confidential": 0.35, 
-        "risk-free": 0.4, "prince": 0.5, "Nigeria": 0.2,
+        "risk-free": 0.4, "prince": 0.5, "Nigeria": 0.5,
         "work from home": 0.3, "earn": 0.2, "per month": 0.25, 
         "apply now": 0.3, "hiring": 0.2, "no experience": 0.25,
-        # Adjusted spam terms
-        "double the money": 0.4, "invest": 0.35, "investment": 0.35, 
-        "money back": 0.3, "fast cash": 0.4, "guaranteed": 0.25, 
-        "limited offer": 0.2, "phone number": 0.3
+        # Increased weights for financial/spam terms
+        "double the money": 0.7, "invest": 0.6, "investment": 0.6, 
+        "money back": 0.5, "fast cash": 0.7, "guaranteed": 0.5, 
+        "limited offer": 0.4, "phone number": 0.6
     }
     boost = sum(weight for word, weight in spam_keywords.items() if re.search(rf"\b{word}\b", text, re.IGNORECASE))
 
     # Detect phone numbers (7 or more digits)
     if re.search(r"\b\d{7,}\b", text):  
-        boost += 0.3  # Adjusted impact of phone numbers
+        boost += 0.6  # Stronger impact for phone numbers
 
     return boost
 
@@ -82,7 +82,7 @@ if st.button("Classify"):
 
         # Display result
         st.subheader("Result:")
-        if boosted_prob >= 0.5:  # Adjusted threshold for spam detection
+        if boosted_prob >= 0.4:  # 🔥 Reduced threshold from 0.5 to 0.4
             st.error(f"🚨 This email is **Spam!** (Confidence: {boosted_prob:.2f})")
         else:
             st.success(f"✅ This email is **Not Spam.** (Confidence: {boosted_prob:.2f})")
