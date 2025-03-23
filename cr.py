@@ -64,7 +64,7 @@ def keyword_boost(text):
     return boost
 
 # Streamlit UI
-st.title("📧 Spam Email Detector")
+st.title("📧 SPAMSENTRY ")
 st.write("Enter an email message below to check if it's spam or not.")
 
 # Input text box
@@ -85,6 +85,6 @@ if st.button("Classify"):
         if boosted_prob >= 0.4:  # 🔥 Reduced threshold from 0.5 to 0.4
             st.error(f"🚨 This email is **Spam!** (Confidence: {boosted_prob:.2f})")
         else:
-            st.success(f"✅ This email is **Not Spam.** (Confidence: {boosted_prob:.2f})")
+            st.success(f"✅ This email is **Ham.** (Confidence: {boosted_prob:.2f})")
     else:
         st.warning("Please enter an email message.")
